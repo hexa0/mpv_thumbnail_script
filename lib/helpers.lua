@@ -4,13 +4,10 @@ local opt = require 'mp.options'
 local utils = require 'mp.utils'
 
 -- Determine the platform --
-do
-  local BinaryFormat = package.cpath:match("%p[\\|/]?%p(%a+)")
 
-  ON_WINDOWS = BinaryFormat == "dll"
-  ON_LINUX = BinaryFormat == "so"
-  ON_MAC = BinaryFormat == "dylib"
-end
+ON_WINDOWS = (package.cpath:gmatch(".dll")() ~= nil)
+ON_MAC = (package.cpath:gmatch(".dylib")() ~= nil)
+ON_LINUX = (package.cpath:gmatch(".so")() ~= nil)
 
 -- Some helper functions needed to parse the options --
 function isempty(v) return not v or (v == "") or (v == 0) or (type(v) == "table" and not next(v)) end
