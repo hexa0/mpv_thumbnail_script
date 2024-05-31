@@ -3,12 +3,14 @@ local msg = require 'mp.msg'
 local opt = require 'mp.options'
 local utils = require 'mp.utils'
 
--- Determine if the platform is Windows --
-ON_WINDOWS = (package.config:sub(1,1) ~= '/')
+-- Determine the platform --
+do
+  local BinaryFormat = package.cpath:match("%p[\\|/]?%p(%a+)")
 
--- Determine if the platform is MacOS --
-local uname = io.popen("uname -s"):read("*l")
-ON_MAC = not ON_WINDOWS and (uname == "Mac" or uname == "Darwin")
+  ON_WINDOWS = BinaryFormat == "dll"
+  ON_LINUX = BinaryFormat == "so"
+  ON_MAC = BinaryFormat == "dylib"
+end
 
 -- Some helper functions needed to parse the options --
 function isempty(v) return not v or (v == "") or (v == 0) or (type(v) == "table" and not next(v)) end
